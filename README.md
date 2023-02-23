@@ -222,7 +222,7 @@ A final word of caution concerns the use of grid cells for computing local value
 ## Get in touch
 
 Do you have any suggestions for additional metrics or ways to improve the analysis?
-Reach us at anev@itu.dk (Ane Rahbek Vierø) or anvy@itu.dk (Anastassia Vybornova).
+Reach us at [redacted for review].
 
 ## Data & Licenses
 

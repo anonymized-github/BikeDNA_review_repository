@@ -132,7 +132,7 @@ All analysis notebooks are in the [`scripts`](scripts) folder.
 
 #### REFERENCE
 
-- **[`2a_initialize_reference`](https://github.com/anerv/cycling_data_quality](https://github.com/anonymized-github/BikeDNA_review_repository/blob/main/scripts/REFERENCE/2a_initialize_reference.ipynb):** This notebook processes the reference data provided by the user to the format needed in the analysis.
+- **[`2a_initialize_reference`](https://github.com/anonymized-github/BikeDNA_review_repository/blob/main/scripts/REFERENCE/2a_initialize_reference.ipynb):** This notebook processes the reference data provided by the user to the format needed in the analysis.
 - **[`2b_intrinsic_analysis_reference`](https://github.com/anonymized-github/BikeDNA_review_repository/blob/main/scripts/REFERENCE/2b_intrinsic_analysis_reference.ipynb):** The intrinsic analysis evaluates the quality of the reference data set in the study area from the perspective of bicycle planning and research. This evaluation includes, for example, disconnected components and network gaps. *Intrinsic* means that the data set is analyzed for itself, without being compared to other data.
 
 #### COMPARE

@@ -30,79 +30,36 @@ assert grid.geom_type.unique()[0] == "Polygon"
 assert grid.loc[0, "geometry"].area == 1
 
 
-# Test simplify bicycle tags
-queries = {
-    "centerline_false_bidirectional_true": [
-        "highway == 'cycleway' & (oneway=='no' or oneway_bicycle=='no')",
-        "highway == 'track' & bicycle == 'designated' & (oneway=='no' or oneway_bicycle =='no')",
-        "highway == 'path' & bicycle == 'designated' & (oneway=='no' or oneway_bicycle =='no')",
-    ],
-    "centerline_false_bidirectional_false": [
-        "highway == 'cycleway' & (oneway !='no' or oneway_bicycle != 'no')",
-        "highway == 'track' & bicycle == 'designated' & (oneway !='no' or oneway_bicycle !='no')",
-        "highway == 'path' & bicycle == 'designated' & (oneway !='no' or oneway_bicycle !='no')",
-    ],
-    "centerline_true_bidirectional_true": [
-        "cycleway_left in ['lane','track','opposite_lane','opposite_track','designated','crossing'] and (cycleway_right in ['no','none','separate'] or cycleway_right.isnull() or cycleway_right not in ['lane','track','opposite_lane','opposite_track','designated','crossing']) and oneway_bicycle =='no'",
-        "cycleway_right in ['lane','track','opposite_lane','opposite_track','designated','crossing'] and (cycleway_left in ['no','none','separate'] or cycleway_left.isnull() or cycleway_left not in ['lane','track','opposite_lane','opposite_track','designated','crossing']) and oneway_bicycle =='no'",
-        "cycleway in ['lane','track','opposite_lane','opposite_track','designated','crossing'] and (oneway_bicycle == 'no' or oneway_bicycle.isnull())",
-        "cycleway_both in ['lane','track','opposite_lane','opposite_track','designated','crossing'] and (oneway_bicycle == 'no' or oneway_bicycle.isnull())",
-        "cycleway_left in ['lane','track','opposite_lane','opposite_track','designated','crossing'] and cycleway_right in ['lane','track','opposite_lane','opposite_track','designated','crossing']",
-    ],
-    "centerline_true_bidirectional_false": [
-        "cycleway_left in ['lane','track','opposite_lane','opposite_track','designated','crossing'] and (cycleway_right in ['no','none','separate'] or cycleway_right.isnull()  or cycleway_right not in ['lane','track','opposite_lane','opposite_track','designated','crossing']) and oneway_bicycle !='no'",
-        "cycleway_right in ['lane','track','opposite_lane','opposite_track','designated','crossing'] and (cycleway_left in ['no','none','separate'] or cycleway_left.isnull()  or cycleway_left not in ['lane','track','opposite_lane','opposite_track','designated','crossing']) and oneway_bicycle != 'no'",
-        "cycleway in ['lane','track','opposite_lane','opposite_track','designated','crossing'] and oneway_bicycle == 'yes'",
-        "cycleway_both in ['lane','track','opposite_lane','opposite_track','designated','crossing'] and oneway_bicycle == 'yes'",
-    ],
-}
-
 # Test simplify cycling tags
-l1 = LineString([[1, 1], [10, 10]])
-l2 = LineString([[2, 1], [6, 10]])
-l3 = LineString([[10, 10], [10, 20]])
-l4 = LineString([[11, 9], [5, 20]])
-l5 = LineString([[1, 12], [4, 12]])
+l1 = LineString([[1,1],[10,10]])
+l2 = LineString([[2,1],[6,10]])
+l3 = LineString([[10,10],[10,20]])
+l4 = LineString([[11,9],[5,20]])
+l5 = LineString([[1,12],[4,12]])
 
-lines = [l1, l2, l3, l4, l5]
-d = {
-    "highway": ["cycleway", "primary", "secondary", "path", "track"],
-    "bicycle_infrastructure": ["yes", "yes", "yes", "yes", "yes"],
-    "cycleway": [np.nan, "track", np.nan, np.nan, "no"],
-    "cycleway_both": [np.nan, np.nan, "lane", "track", np.nan],
-    "bicycle_road": [0, 0, 0, 0, "yes"],
-    "bicycle": [np.nan, np.nan, np.nan, "designated", "designated"],
-    "cycleway_right": [np.nan, np.nan, np.nan, np.nan, np.nan],
-    "cycleway_left": [np.nan, np.nan, np.nan, np.nan, np.nan],
-    "oneway": ["no", "yes", np.nan, "yes", np.nan],
-    "oneway_bicycle": [np.nan, "yes", np.nan, "no", np.nan],
-    "geometry": lines,
-}
+lines = [l1, l2, l3,l4,l5]
+d = {'highway': ['cycleway','primary','secondary','path','track'],
+    'cycling_infrastructure': ['yes','yes','yes','yes','yes'],
+    'cycleway': [np.nan,'track',np.nan,np.nan,'no'],
+    'cycleway_both': [np.nan,np.nan,'shared_lane','track',np.nan],
+    'bicycle_road': [0,0,0,0,'yes'],
+    'bicycle': [np.nan,np.nan,np.nan,'designated','designated'],
+    'cycleway_right': [np.nan,np.nan,np.nan,np.nan,np.nan],
+    'cycleway_left': [np.nan,np.nan,np.nan,np.nan,np.nan],
+    'oneway': ['no','yes',np.nan,'yes',np.nan],
+    'oneway_bicycle': [np.nan,'yes',np.nan, 'no',np.nan],
+    'geometry':lines }
 edges = gpd.GeoDataFrame(d)
-edges["length"] = edges.geometry.length
+edges['length'] = edges.geometry.length
 
-edges = ef.simplify_bicycle_tags(edges, queries)
+edges = ef.simplify_cycling_tags(edges)
 
-assert (
-    edges.loc[0, "bicycle_bidirectional"] == True
-    and edges.loc[0, "bicycle_geometries"] == "true_geometries"
-)
-assert (
-    edges.loc[1, "bicycle_bidirectional"] == False
-    and edges.loc[1, "bicycle_geometries"] == "centerline"
-)
-assert (
-    edges.loc[2, "bicycle_bidirectional"] == True
-    and edges.loc[2, "bicycle_geometries"] == "centerline"
-)
-assert (
-    edges.loc[3, "bicycle_bidirectional"] == True
-    and edges.loc[3, "bicycle_geometries"] == "true_geometries"
-)
-assert (
-    edges.loc[4, "bicycle_bidirectional"] == False
-    and edges.loc[4, "bicycle_geometries"] == "true_geometries"
-)
+assert edges.loc[0,'cycling_bidirectional'] == True and edges.loc[0,'cycling_geometries'] == 'true_geometries'
+assert edges.loc[1,'cycling_bidirectional'] == False and edges.loc[1,'cycling_geometries'] == 'centerline'
+assert edges.loc[2,'cycling_bidirectional'] == True and edges.loc[2,'cycling_geometries'] == 'centerline'
+assert edges.loc[3,'cycling_bidirectional'] == True and edges.loc[3,'cycling_geometries'] == 'true_geometries'
+assert edges.loc[4,'cycling_bidirectional'] == False and edges.loc[4,'cycling_geometries'] == 'true_geometries'
+
 
 
 # Test measure_infrastructure_length
